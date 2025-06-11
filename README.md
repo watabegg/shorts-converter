@@ -1,36 +1,118 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# YouTube Shorts 変換ツール
 
-## Getting Started
+YouTube用の横動画（16:9）を簡単にShorts用の縦動画（9:16）に変換できるWebアプリケーションです。
 
-First, run the development server:
+## 主要機能
+
+- **かんたん変換**: 横動画を縦動画に自動変換
+- **タイトル追加**: 動画にタイトルテキストをオーバーレイ
+- **サムネイル挿入**: 9:16の画像をイントロとして追加
+- **ブラウザ完結**: FFmpeg.wasmを使用してクライアントサイドで処理
+- **リアルタイムプレビュー**: 変換後の動画をその場で確認
+- **進捗表示**: 変換の進捗状況をリアルタイムで表示
+
+## 技術スタック
+
+- **Next.js 15** (App Router)
+- **TypeScript**
+- **Tailwind CSS v4**
+- **shadcn/ui** - UIコンポーネント
+- **FFmpeg.wasm** - ブラウザ上での動画変換
+- **Zod** - バリデーション
+- **Conform** - フォーム管理
+
+## セットアップ
+
+### 1. 依存関係のインストール
+
+```bash
+npm install
+```
+
+### 2. 開発サーバーの起動
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+ブラウザで [http://localhost:3000](http://localhost:3000) を開いて確認してください。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. 本番用ビルド
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## 使い方
 
-To learn more about Next.js, take a look at the following resources:
+1. **動画タイトル**を入力
+2. **横動画ファイル**（MP4、WebM等）をアップロード
+3. **サムネイル画像**（9:16推奨）をアップロード
+4. **変換開始**ボタンをクリック
+5. 変換完了後、プレビューを確認してダウンロード
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 対応ファイル形式
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 動画ファイル
+- MP4, WebM, AVI, MOV など主要な動画形式
 
-## Deploy on Vercel
+### 画像ファイル
+- JPEG, PNG, WebP など主要な画像形式
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 制限事項
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- 動画ファイル: 最大100MB
+- 画像ファイル: 最大10MB
+- 出力動画: 最大60秒に制限
+
+## ディレクトリ構造
+
+```
+src/
+├── app/                  # Next.js App Router
+│   ├── layout.tsx        # ルートレイアウト
+│   └── page.tsx          # トップページ
+├── features/             # 機能別パッケージ
+│   └── video-conversion/
+│       ├── actions.ts    # Server Actions
+│       ├── components/   # コンポーネント
+│       ├── repository.ts # FFmpeg処理
+│       └── schemas.ts    # バリデーション
+├── components/           # 共通UIコンポーネント
+│   ├── ui/              # shadcn/ui
+│   └── common/          # 独自コンポーネント
+├── lib/                 # ユーティリティ
+└── core/                # ドメイン層
+```
+
+## 開発方針
+
+このプロジェクトはクリーンアーキテクチャとPackage by Featureパターンを採用しています：
+
+- **プレゼンテーション層**: React コンポーネント
+- **アプリケーション層**: Next.js Server Actions  
+- **ドメイン層**: ビジネスロジックと型定義
+- **インフラストラクチャ層**: FFmpeg.wasm処理
+
+## ライセンス
+
+MIT License
+
+## 貢献
+
+プルリクエストや Issue の作成を歓迎します。
+
+## トラブルシューティング
+
+### FFmpeg.wasmが読み込めない場合
+
+1. ブラウザが SharedArrayBuffer をサポートしているか確認
+2. HTTPSでアクセスしているか確認（localhost除く）
+3. Cross-Origin ヘッダーが正しく設定されているか確認
+
+### 変換に失敗する場合
+
+1. 入力ファイルが対応形式か確認
+2. ファイルサイズが制限内か確認
+3. ブラウザのコンソールでエラーメッセージを確認
